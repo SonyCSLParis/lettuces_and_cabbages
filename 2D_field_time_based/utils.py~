@@ -1,0 +1,4 @@
+import numpy as np
+
+def growth(t, t0, species, R, a):
+	return R[species]/(1+np.exp(-a[species]*(t-t0)+4))
