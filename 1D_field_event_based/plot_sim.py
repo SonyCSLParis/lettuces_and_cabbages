@@ -42,7 +42,6 @@ def plot_field(plants, sim_params, ts = None, svg = None):
 def plot_N_fiels(prs, folder, svg, ts=[0,4000]): 
    fig=pl.figure(figsize=(25,4*len(prs)))
 
-
    for k, pr in enumerate(prs):
       idx = len(prs)*100+10+k+1
       ax = fig.add_subplot(idx)
@@ -59,21 +58,3 @@ def plot_N_fiels(prs, folder, svg, ts=[0,4000]):
    if svg: 
       pl.savefig(svg, facecolor=fig.get_facecolor(),bbox_inches="tight") 
       pl.clf()
-
-folder ="data/bigc/"
-prs = np.linspace(.05,1.1, 22) 
-#plot_N_fiels([.05,.5, 1.1], folder, "bigc_N_fields.png")
-
-Ts = np.zeros(22)
-Ncs = []
-Nls = []
-
-for i, pr in enumerate(prs):
-   sim = json.load(open("data/bigc/%.2f.json"%pr,"r"))
-   plants = sim["plants"]
-   sim_params = sim["sim_params"]
-   Ts[i] = sim['sim_time']   
-   Nc, Nl = get_N(plants, sim_params)
-   Ncs.append(Nc)
-   Nls.append(Nl)
-   plot_field(plants, sim_params, [0,4000], "figs/%.2f.png"%pr)

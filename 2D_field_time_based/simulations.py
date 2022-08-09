@@ -5,6 +5,7 @@ import os
 import glob
 import numpy as np
 from joblib import Parallel, delayed
+import time
 
 def dyn(pr, pc =.5, N = 2000):
    ms, ts = sim.sim(pr, pc, N, params['R'], params['a'], params["tmax"], False, params["cols"])
@@ -24,11 +25,16 @@ def static(pr, pc =.5, N = 2000):
     
 params = json.load(open("default.json"))
 
+pr = 5
 pc = .5
 N = 2000
 
-prs = np.linspace(.05,2.5, 50)
-Parallel(n_jobs=30)(delayed(static)(pr) for pr in prs)
+t0 = time.time()
+ms, ts = sim.sim(pr, pc, N, params['R'], params['a'], params["tmax"], False, params["cols"])
+print(time.time()-t0)  
+
+#prs = np.linspace(.05,2.5, 50)
+#Parallel(n_jobs=30)(delayed(static)(pr) for pr in prs)
 
 #prs = np.linspace(.05,4, 50)
 #Parallel(n_jobs=30)(delayed(dyn)(pr) for pr in prs)

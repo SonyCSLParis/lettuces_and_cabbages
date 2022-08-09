@@ -1,91 +1,100 @@
 import numpy as np
 import matplotlib.pyplot as pl
-import plot_utils as pu
 import utils
 import os
+import json
 
 class Plant:
-   def __init__(self, x, y, t, species):
+   def __init__(self, x, y, t, species, R, a, tmax, b=4):
       self.x = x
       self.y = y 
       self.t = t
       self.species=species
+      self.R = R
+      self.a = a
+      self.b = b
+      self.active = 1
+      self.tmax = tmax
 
-def clean_plants(t, plants, tmax):
+   def growth(self, t):
+      return self.R/(1+np.exp(-self.a*(t-self.t)+self.b))
+
+   def to_dict(self):
+      return {'x': self.x, 'y': self.y, 't': self.t, 'species': self.species}
+      
+def harvest_plants(t, plants):
   for p in plants:
-  	if (t-p.t)>tmax[p.species]: plants.remove(p)
+     if p.active:
+        if (t-p.t)>p.tmax: p.active = 0 
   return plants
 
-def run_dt(dt, plants, t, R, a, static, tmax, cols=None, meas_it=True, plot_it=True):
-   ts =[]
-   ms= []
-   for k in range(dt):
-      t+=1
-      
-      if plot_it: pu.mk_fig(t, plants, plot_it+"/%05d.png"%t, R, a, static, cols)
-      plants = clean_plants(t, plants, tmax)
-      if meas_it:
-         ts.append(t)
-         ms.append(utils.get_meas(plants, t, R, a, static))
-      else: ms = None
-   return plants, t, ms, ts         
+def get_random(xr, yr, planting_rate, Nr):
+   rx = np.random.uniform(xr[0],xr[1], Nr)
+   ry = np.random.uniform(yr[0],yr[1], Nr)
+   rt = np.random.exponential(1/planting_rate, Nr).astype('int')
+   rk = 0
+   return rx, ry, rt, rk
 
-def sim(planting_rate, pc, N, R, a, tmax, static=False, cols=None):
-   tmp = "tmp_%.2f"%planting_rate
-   if not(os.path.exists(tmp)):
-      os.mkdir(tmp)
+def sim(planting_rate, pc, N, R, a, tmax, svg):
    xr=[0.4,9.6]
    yr=[-1.6,1.6]
+   Nr = 10000
+   #rx, ry, rt, rk = get_random(xr, yr, planting_rate, Nr)
+   
+   plants = []
+   """
+   x = rx[rk]
+   y = ry[rk]
+   dt = rt[rk]
+   rk += 1
+   """
+   x = np.random.uniform(xr[0],xr[1])
+   y = np.random.uniform(yr[0],yr[1])
+   t = np.random.exponential(1/planting_rate).astype('int')
 
-   t = 0
-   plants=[]
-   meas = [[0,0,0,0]]
-   times=[0]
-
-   x=np.random.uniform(xr[0],xr[1])
-   y=np.random.uniform(yr[0],yr[1])
-   dt = int(np.random.exponential(1/planting_rate))
-
-   if dt>0:
-      #plants, t, ms, ts = run_dt(dt, plants, t, R, a, static, tmax, cols, plot_it="tmp_%.2f"%planting_rate)
-      plants, t, ms, ts = run_dt(dt, plants, t, R, a, static, tmax, cols, plot_it=False)
-      meas = np.concatenate([meas, ms])
-      times = np.concatenate([times,ts])
-   plants.append(Plant(x, y, t, "c"))
+   t=dt
+   plants.append(Plant(x, y, t,  "c", R["c"], a["c"], tmax["c"]))
    
    for i in range(N):
       planted = 0
+      if not(i%100): print("planting %s"%i)           
+
       while (planted==0):
          inter = 0 
-         x=np.random.uniform(xr[0],xr[1])
-         y=np.random.uniform(yr[0],yr[1])
-         dt = int(np.random.exponential(1/planting_rate))
-         #dt = 0
+         """
+         x = rx[rk]
+         y = ry[rk]
+         dt = rt[rk]
+         rk += 1
+         if rk>Nr-1:
+            rx, ry, rt, rk = get_random(xr, yr, planting_rate, Nr)
+         """
+         x = np.random.uniform(xr[0],xr[1])
+         y = np.random.uniform(yr[0],yr[1])
+         t = np.random.exponential(1/planting_rate).astype('int')
+ 
          species = np.random.choice(["c", "l"], p =(pc, 1-pc))
-         p1 = Plant(x, y, t+dt, species)
+         p1 = Plant(x, y, t+dt,  species, R[species], a[species], tmax[species])
 
          breaking = False   
          for p2 in plants:
+          if p2.active:
             ti = t+dt
             tf = min(p2.t+tmax[p2.species], t+dt+tmax[p1.species]) 
             for k in range(ti, tf):
                #we iterate until death of first plant 
-               val = utils.is_intersect(p1, p2, k, R, a, static)
+               val = utils.is_intersect(p1, p2, k, R, a, False)
                if val: 
                    inter = 1
                    breaking = True
                    break
             if breaking: break       
          if not(inter): 
-            #print(i, "planted! ", inter)
             planted = 1
             if dt>0: 
-               #plants, t, ms, ts = run_dt(dt, plants, t, R, a, static, tmax, cols, plot_it="tmp_%.2f"%planting_rate)
-               plants, t, ms, ts = run_dt(dt, plants, t, R, a, static, tmax, cols, plot_it=False)
-               #print(meas, ms)
-               meas = np.concatenate([meas, ms])
-               times = np.concatenate([times,ts])
+               t += dt
+               plants = harvest_plants(t, plants)
             plants.append(p1)
-         #meas.append(utils.get_meas(plants, t, R, a))
-   #m = np.array(meas)[1000:].mean(axis=0)      
-   return meas,times  
+   res = [p.to_dict()for p in plants]
+   if svg: json.dump(res, open(svg, 'w'))      
+   return all_ts, sel_ts

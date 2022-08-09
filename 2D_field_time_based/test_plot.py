@@ -5,7 +5,6 @@ import glob
 import time
 import imageio
 import os
-import shutil
 
 def growth(t, p, params):
    s = p["species"] 
@@ -50,7 +49,7 @@ def get_meas(plants, params):
    return ms     
 
 def mk_anim(plants, params, folder = "tmp", svg="test.mp4"):   
-   if os.path.exists(folder): shutil.rmtree(folder)
+   if os.path.exists(folder): os.rmdir(folder)
    os.mkdir(folder)
    for t in range(int(plants[-1]["t"])): mk_fig(t, plants, params, folder+"/%03d.png"%t)
    files = glob.glob(folder+"/*")
@@ -59,21 +58,27 @@ def mk_anim(plants, params, folder = "tmp", svg="test.mp4"):
    for f in files:
       writer.append_data(imageio.imread(f))
    writer.close()
+   
+params = json.load(open("default.json"))
+plants = json.load(open("test.json"))
 
-def fig_measures(plants, params, svg="meas.png"):
-   ms = get_meas(plants, params) #Nc, Nl, Ac, Al
+t0=time.time()
+#mk_anim(plants, params, "tmp", "test.mp4")
+ms = get_meas(plants, params) #Nc, Nl, Ac, Al
 
-   pl.subplot(211)
-   pl.fill_between(np.arange(ms.shape[0]), np.zeros(ms.shape[0]), ms[:,0], color=params["cols"]["c"])
-   pl.fill_between(np.arange(ms.shape[0]), ms[:,0], ms[:,0]+ms[:,1], color=params["cols"]["l"])
-   pl.ylabel("# plants")
-   pl.xticks([])
+pl.subplot(211)
+pl.fill_between(np.arange(ms.shape[0]), np.zeros(ms.shape[0]), ms[:,0], color=params["cols"]["c"])
+pl.fill_between(np.arange(ms.shape[0]), ms[:,0], ms[:,0]+ms[:,1], color=params["cols"]["l"])
+pl.ylabel("# plants")
+pl.xticks([])
 
-   pl.subplot(212)
-   pl.fill_between(np.arange(ms.shape[0]),np.zeros(ms.shape[0]),ms[:,2], color=params["cols"]["c"])
-   pl.fill_between(np.arange(ms.shape[0]),ms[:,2],ms[:,2]+ms[:,3], color=params["cols"]["l"])
-   pl.ylabel("Area")
-   pl.xlabel("time [days]")
+pl.subplot(212)
+pl.fill_between(np.arange(ms.shape[0]),np.zeros(ms.shape[0]),ms[:,2], color=params["cols"]["c"])
+pl.fill_between(np.arange(ms.shape[0]),ms[:,2],ms[:,2]+ms[:,3], color=params["cols"]["l"])
+pl.ylabel("Area")
+pl.xlabel("time [days]")
 
-   pl.savefig(svg)
-   pl.clf()
+pl.savefig("meas.png")
+pl.clf()
+
+print(time.time()-t0)
