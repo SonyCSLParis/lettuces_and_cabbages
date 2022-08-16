@@ -81,12 +81,11 @@ def sim(sim_params, svg=None):
                if t_inter<tf:
                   inter = 1
                   break
-
+         t+=dt
          if not(inter): 
             accept = 1
             sel_ts.append(dt)
             if dt>0:
-               t+=dt
                active_plants = harvest_plants(t, active_plants)        
  
             all_plants.append(p1)

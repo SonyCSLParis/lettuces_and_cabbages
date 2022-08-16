@@ -32,5 +32,5 @@ if os.path.exists(plot_folder): shutil.rmtree(plot_folder)
 os.mkdir(plot_folder)
 
 #prs = np.linspace(0.05, 10, 20)
-prs =  np.linspace(.05,15,300)
+prs =  np.linspace(30, 45, 301)
 res = Parallel(n_jobs=35)(delayed(one_run)(pr, svg_folder = res_folder, name = "%.2f"%pr, plot_folder = plot_folder) for pr in prs)
