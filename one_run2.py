@@ -7,6 +7,7 @@ import numpy as np
 from joblib import Parallel, delayed
 
 def dyn(pr, pc =.5, N = 2000):
+   os.chdir("/home/viot/COLLIAUX_SIM/")
    ms, ts = sim.sim(pr, pc, N, params['R'], params['a'], params["tmax"], False, params["cols"])
    np.savetxt("data/dyn_%.2f_times.txt"%pr, ts)
    np.savetxt("data/dyn_%.2f_meas.txt"%pr, ms)

@@ -20,7 +20,6 @@ class Plant:
 def recouvre(plants,ptrial,t,tmax,R):
     #on élimine  virtuellement les plantes qui ont dépassé le temps max à cette date
 
-    overlap=False
     for p1 in plants:
         if (t-p1.t)>tmax[p1.species]:
             plants.remove(p1)
