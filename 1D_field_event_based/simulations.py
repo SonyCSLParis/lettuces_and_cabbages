@@ -25,12 +25,12 @@ def one_run(pr = 1, name = "test", svg_folder = "res/", plot_folder = "figs/"):
 res_folder = "res/prs/"
 plot_folder = "figs/prs/"
 
-if os.path.exists(res_folder): shutil.rmtree(res_folder)
-os.mkdir(res_folder)
+#if os.path.exists(res_folder): shutil.rmtree(res_folder)
+#os.mkdir(res_folder)
 
-if os.path.exists(plot_folder): shutil.rmtree(plot_folder)
-os.mkdir(plot_folder)
+#if os.path.exists(plot_folder): shutil.rmtree(plot_folder)
+#os.mkdir(plot_folder)
 
 #prs = np.linspace(0.05, 10, 20)
-prs =  np.linspace(30, 45, 301)
+prs =  np.linspace(0.05, 30, 601)
 res = Parallel(n_jobs=35)(delayed(one_run)(pr, svg_folder = res_folder, name = "%.2f"%pr, plot_folder = plot_folder) for pr in prs)
