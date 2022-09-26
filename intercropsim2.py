@@ -9,7 +9,6 @@ class Plant:
       self.x = x
       self.y = y 
       self.t = t
-      #t est le temps ou la graine est plantée
       self.species=species
 
 # def clean_plants(t, plants, tmax):
@@ -51,7 +50,7 @@ def sim(planting_rate, pc, N, R, a, tmax, static=False, cols=None):
    species = np.random.choice(["c", "l"], p =(pc, 1-pc))
    plants.append(Plant(x, y, t, species))
    ms=plants[0]   
-   #dt = np.random.exponential(1/planting_rate)
+   #dt = np.random.exponential(1/ ing_rate)
    # dt represente le prochain temps ou on tente de planter quelque chose
    #initialisation on plante la première plante qui est toujours acceptée
    #meas = np.concatenate([meas, ms])

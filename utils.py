@@ -2,7 +2,7 @@ import numpy as np
 
 def growth(t, t0, species, R, a, static = False):
     if not(static):
-        return R[species]/(1+np.exp(-a[species]*(t-t0)+4))
+        return R[species]/(1+np.exp(-a[species]*(t-t0)+4   ))
     else:
         return R[species]
     

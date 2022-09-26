@@ -1,8 +1,8 @@
 import intercropsim2 as sim
 import json
-import plot_utils as pu
+#import plot_utils as pu
 import os
-import glob
+#import glob
 import numpy as np
 from joblib import Parallel, delayed
 
@@ -25,6 +25,7 @@ def static(pr, pc =.5, N = 2000):
       print("Done", pr)
     
 params = json.load(open("default.json"))
+print(params)
 
 pc = .5
 N = 2000
@@ -40,5 +41,4 @@ for i,pr in enumerate(prs):
    static(pr)
 """
 
-#prs = np.linspace(.05,4, 50)
-#Parallel(n_jobs=30)(delayed(dyn)(pr) for pr in prs)
+
