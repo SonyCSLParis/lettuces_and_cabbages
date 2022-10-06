@@ -1,4 +1,5 @@
-res/*
+res/
+figs/
 __pycache__/
 *~
 debug*
