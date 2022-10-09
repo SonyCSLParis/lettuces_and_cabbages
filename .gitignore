@@ -1,0 +1,6 @@
+res/
+figs/
+__pycache__/
+*~
+debug*
+local/*
