@@ -56,7 +56,7 @@ def plot_schema(srs, eta, x_p, prs, pxs, pss, accept, svg):
    pl.xlim([0,10]) 
    pl.text(srs/2, .5, r'$\sum_{i=1}^N \sigma_i$', fontsize=24)
    pl.text(srs+2, .5, r'$\phi_{i,N}$', fontsize=24)
-   pl.text(srs+eta+.1, 0., r'$\eta$', fontsize=24)
+   pl.text(srs+eta+.1, .8, r'$\eta$', fontsize=24)
 
    pl.subplot(212)
    pl.axis("off")
@@ -69,7 +69,7 @@ def plot_schema(srs, eta, x_p, prs, pxs, pss, accept, svg):
    else: col="r"
    pl.plot([x_p, x_p], [0,1], color = col, lw=4)
    for i in range(len(prs)):
-      pl.fill_between([pxs[i]-prs[i], pxs[i]+prs[i]], [0, 0], [1,1], color=cols[pss[i]])
+      pl.fill_between([pxs[i]-prs[i]/2, pxs[i]+prs[i]/2], [0, 0], [1,1], color=cols[pss[i]])
    pl.xlim([0,10]) 
    pl.savefig(svg)
    pl.clf()

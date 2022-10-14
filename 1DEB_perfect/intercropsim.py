@@ -101,8 +101,11 @@ def sim(sim_params, svg=None):
          for p in active_plants: prs.append(2*p.growth(t+dt))
          for p in active_plants: pxs.append(p.x)
          for p in active_plants: pss.append(p.species)
-         srs = 2*np.array(prs).sum()
-         
+         srs = np.array(prs).sum()
+         ut.plot_schema(srs, eta, x, prs, pxs, pss, accept, "test/%s_%s.png"%(i,m))     
+         if (i==5)*(m==11): 
+            print("n0 ", n0)
+            #assert(i==0)
          #x = np.random.uniform(xr[0],xr[1])
 
          #if i ==1000: lala
@@ -139,6 +142,7 @@ def sim(sim_params, svg=None):
    #if svg: save_sim(t0,sim_params, active_plants, svg)
    return sel_ts, ms
 
+np.random.seed(123456)
 sim_params = json.load(open('default.json'))
 sim_params["planting_rate"] = 5  
 #sim_params["N"] = 3
