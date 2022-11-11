@@ -15,6 +15,12 @@ class Plant:
       self.active = 1
       self.tmax = tmax
 
+   def __lt__(self, other):
+      return self.x < other.x
+
+   def __gt__(self, other):
+      return self.x > other.x
+
    def growth(self, t):
       return self.R/(1+np.exp(-self.a*(t-self.t)+self.b))
 
@@ -33,6 +39,13 @@ def harvest_plants(t, plants):
         if (t-p.t)>p.tmax: plants.remove(p) 
   return plants
 
+def compute_inter(k, plants, t):
+   return max(plants[k+1].x -plants[k].x - (plants[k+1].growth(t)+plants[k].growth(t)),0)
+
+def compute_phis(plants, t):
+   inters = np.array([compute_inter(k, plants, t) for k in range(len(plants)-1)])
+   return np.concatenate([[0],np.cumsum(inters)])
+
 def save_sim(t0, sim_params, plants, svg):  
       plants_dict = [p.to_dict() for p in plants]
       res = {}
@@ -46,6 +59,9 @@ def sim(sim_params, svg=None):
    xr=[sim_params["xmin"],sim_params["xmax"]]
    t = 0
 
+   pi = Plant(0, t, species, 0, 0, 10**10)
+   pe = Plant(10, t, species, 0, 0, 10**10)
+
    plants=[]
    sel_ts = []
 
@@ -57,7 +73,7 @@ def sim(sim_params, svg=None):
    p = Plant(x, t, species, sim_params["R"][species], sim_params["a"][species], sim_params["tmax"][species])
 
    all_plants=[p]
-   active_plants=[p]
+   active_plants=[pi,p,pe]
    sel_ts = [t]
 
    for i in range(sim_params["N"]):
