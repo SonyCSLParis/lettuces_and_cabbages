@@ -1,4 +1,6 @@
 {"N": 2000, 
+ "xmin": 0.4,
+ "xmax": 99.6,
  "pc": 0.5, 
  "planting_rate": 0.1,
  "type": "dynamic",

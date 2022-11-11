@@ -43,7 +43,7 @@ def save_sim(t0, sim_params, plants, svg):
 
 def sim(sim_params, svg=None):
    t0=time.time()
-   xr=[sim_params["xmin"],sim_params["xmax"]]
+   xr=[0.4,9.6]
    t = 0
 
    plants=[]
