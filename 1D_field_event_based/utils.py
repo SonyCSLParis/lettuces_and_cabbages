@@ -17,8 +17,8 @@ def plot_plant(t0, x0, species, tmax, R, a, cols, ax):
     ax.fill(ts, Rs, color = cols[species])
     return Rs
 
-def plot_field(plants, sim_params, ts, svg):
-   fig=pl.figure(figsize=(25,4))
+def plot_field(plants, sim_params, ts, svg, w=4):
+   fig=pl.figure(figsize=(25,w))
    ax = fig.add_subplot(111)
 
    fig.patch.set_facecolor("#805b21")
@@ -40,9 +40,6 @@ def get_N(plants, sim_params):
       if p['species']=='l': Nls[p["t"]:p["t"]+sim_params['tmax']['l']]+=1
     return Ncs, Nls
 
-#def plot_N(plants):
-"""
-sim = json.load(open("sim.json","r"))
-plants = sim["plants"]
-sim_params = sim['sim_params']
-"""
+#sim_data = json.load(open("res/testtest.json"))
+#plot_field(sim_data["plants"], sim_data["sim_params"], [0,4000], "test.png",8)
+
