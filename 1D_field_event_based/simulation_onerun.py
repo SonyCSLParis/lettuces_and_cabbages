@@ -7,7 +7,7 @@ from joblib import Parallel, delayed
 import os
 import numpy as np
 
-def one_run(pr = 1, name = "test", svg_folder = "res/test", plot_folder = "figs/"):
+def one_run(pr = 1, name = "test", svg_folder = "res/test/", plot_folder = "figs/"):
    t0 = time.time()
    if not(os.path.exists(svg_folder)): os.mkdir(svg_folder)
    sim_params = json.load(open('default.json'))
