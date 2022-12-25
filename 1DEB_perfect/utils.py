@@ -40,7 +40,7 @@ def get_N(plants, sim_params):
       if p['species']=='l': Nls[p["t"]:p["t"]+sim_params['tmax']['l']]+=1
     return Ncs, Nls
 
-def plot_schema(srs, eta, x_p, prs, pxs, pss, accept, svg):
+def plot_schema(srs, eta, x_p, prs, pxs, pss, accept, svg, i, m):
    cols = {"c" : [0.1, 0.4, 0.1], "l": [0.1, 0.8, 0.1]}
 
    fig=pl.figure(figsize=(25,4))
@@ -56,8 +56,8 @@ def plot_schema(srs, eta, x_p, prs, pxs, pss, accept, svg):
    pl.xlim([0,10]) 
    pl.text(srs/2, .5, r'$\sum_{i=1}^N \sigma_i$', fontsize=24)
    pl.text(srs+2, .5, r'$\phi_{i,N}$', fontsize=24)
-   pl.text(srs+eta+.1, 0., r'$\eta$', fontsize=24)
-
+   pl.text(srs+eta+.1, .8, r'$\eta$', fontsize=24)
+   pl.title("Plant %s Trial %s"%(i, m))
    pl.subplot(212)
    pl.axis("off")
    pl.fill_between([0, 10], [0, 0], [1,1], color="#805b21")
@@ -69,7 +69,7 @@ def plot_schema(srs, eta, x_p, prs, pxs, pss, accept, svg):
    else: col="r"
    pl.plot([x_p, x_p], [0,1], color = col, lw=4)
    for i in range(len(prs)):
-      pl.fill_between([pxs[i]-prs[i], pxs[i]+prs[i]], [0, 0], [1,1], color=cols[pss[i]])
+      pl.fill_between([pxs[i]-prs[i]/2, pxs[i]+prs[i]/2], [0, 0], [1,1], color=cols[pss[i]])
    pl.xlim([0,10]) 
    pl.savefig(svg)
    pl.clf()

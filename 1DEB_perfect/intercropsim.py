@@ -59,7 +59,7 @@ def save_sim(t0, sim_params, plants, svg):
 
 def sim(sim_params, svg=None):
    t0=time.time()
-   xr=[0.4,9.6]
+   xr=[sim_params["xmin"],sim_params["xmax"]]
    t = 0
 
    plants=[]
@@ -83,7 +83,7 @@ def sim(sim_params, svg=None):
    for i in range(sim_params["N"]):
       accept = 0
       m=0
-      if not(i%100): print(i, "plants")
+      #if not(i%100): print(i, "plants")
       while not(accept):
          m+=1
          inter = 0
@@ -95,16 +95,17 @@ def sim(sim_params, svg=None):
          n0 = np.where(np.diff(d)!=0)[0][0]
          x = np.sum([2*active_plants[k].growth(t+dt) for k in range(n0+1)])+eta
          
+         #The following block is ONLY FOR DEBUG
          prs = [] 
          pxs = []
          pss = []
          for p in active_plants: prs.append(2*p.growth(t+dt))
          for p in active_plants: pxs.append(p.x)
          for p in active_plants: pss.append(p.species)
-         srs = 2*np.array(prs).sum()
-         
-         #x = np.random.uniform(xr[0],xr[1])
+         srs = np.array(prs).sum()
+         ut.plot_schema(srs, eta, x, prs, pxs, pss, accept, "test/%03d_%03d.png"%(i,m), i , m)     
 
+         #x = np.random.uniform(xr[0],xr[1])
          #if i ==1000: lala
          species = np.random.choice(["c", "l"], p =(sim_params["pc"], 1-sim_params["pc"]))
          p1 = Plant(x, t+dt, species, sim_params["R"][species], sim_params["a"][species], sim_params["tmax"][species])
@@ -119,32 +120,58 @@ def sim(sim_params, svg=None):
                if t_inter<tf:
                   inter = 1
                   break
-         t+=dt
+         #t+=dt
 
          if not(inter): 
-            print("t = %s, accepted after %s trials"%(t,m))
+            t+=dt  
+            #print("t = %s, accepted after %s trials"%(t,m))
             accept = 1
             sel_ts.append(dt)
             ms.append(m)  
             if dt>0:
-               print(len(active_plants))
+               #print(len(active_plants))
                active_plants = harvest_plants(t, active_plants) 
-               print(len(active_plants))
+               #print(len(active_plants))
             all_plants.append(p1)
             #active_plants.append(p1)
             bisect.insort_left(active_plants, p1)
-         ut.plot_schema(srs, eta, x, prs, pxs, pss, accept, "test/%s_%s.png"%(i,m))     
+            #ONLY FOR DEBUG
+            ut.plot_schema(srs, eta, x, prs, pxs, pss, accept, "test/%03d_%03d.png"%(i,m), i, m)     
 
    if svg: save_sim(t0,sim_params, all_plants, svg)
    #if svg: save_sim(t0,sim_params, active_plants, svg)
    return sel_ts, ms
 
+
+np.random.seed(123456)
 sim_params = json.load(open('default.json'))
-sim_params["planting_rate"] = 5  
-#sim_params["N"] = 3
-sim_params["N"] = 40
+sim_params["planting_rate"] = .5
+sim_params["N"] = 40 #for debug
+#sim_params["N"] = 4000
 t0 = time.time()
 res = sim(sim_params, "test.json")
 print(time.time()-t0)
+
 sim_data = json.load(open("test.json"))
-ut.plot_field(sim_data["plants"], sim_data["sim_params"], [0,4000], "test.png")
+ut.plot_field(sim_data["plants"], sim_data["sim_params"], [0,4000], "smart_v2.png")
+
+"""
+N = 15
+prs = np.linspace(.05, 0.5, N)
+ts = np.zeros(N)
+
+for i in range(N):
+   sim_params = json.load(open('default.json')) 
+   sim_params["planting_rate"] = prs[i]
+   #sim_params["N"] = 3
+   sim_params["N"] = 4000
+   t0 = time.time()
+   res = sim(sim_params, "test.json")
+   ts[i] = (time.time()-t0)
+   sim_data = json.load(open("test.json"))
+   ut.plot_field(sim_data["plants"], sim_data["sim_params"], [0,4000], "figs/smart_v2_%02d.png"%i)
+   print(i, prs[i], ts[i])
+
+
+np.savetxt("ts_smart.txt", ts)
+"""
