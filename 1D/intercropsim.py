@@ -39,7 +39,7 @@ def intersect_index(t, p1, p2, d):
    
 def harvest_plants(t, plants):
   for p in plants:
-        if (t-p.t)>p.tmax: plants.remove(p) 
+     if (t-p.t)>p.tmax: plants.remove(p) 
   return plants
 
 def compute_inter(k, plants, t):
