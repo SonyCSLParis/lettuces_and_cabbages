@@ -9,7 +9,7 @@ from functools import reduce
 from operator import xor
 from itertools import chain
 
-np.random.seed(42)
+#np.random.seed(42)
 
 class Plant:
    def __init__(self, i, x, t, species, R, a, tmax, b=4):
@@ -105,12 +105,14 @@ def get_x_optimal(p1, active_plants, i, xlims=[0,100]):
       return x, eta, ei_cs[-1]
    else: return 0, 0, 0
 
-def one_step_optimal(t, sim_params, active_plants, all_plants, xr, i, waste=True, debug=False):
+def one_step_optimal(t, sim_params, active_plants, all_plants, xr, i, waste=True, force_proba=False, debug=False):
    m=0      
    accept = 0
+   species = np.random.choice(["c", "l"], p =(sim_params["pc"], 1-sim_params["pc"]))
+      
    while not(accept):
       dt = np.random.exponential(1/sim_params["planting_rate"])         
-      species = np.random.choice(["c", "l"], p =(sim_params["pc"], 1-sim_params["pc"]))
+      if not(force_proba): species = np.random.choice(["c", "l"], p =(sim_params["pc"], 1-sim_params["pc"]))
       p1 = Plant(i+1, 0, t+dt, species, sim_params["R"][species], sim_params["a"][species], sim_params["tmax"][species])
       x, eta, accept = get_x_optimal(p1, active_plants, i, xr)
         
@@ -126,7 +128,7 @@ def one_step_optimal(t, sim_params, active_plants, all_plants, xr, i, waste=True
    bisect.insort_left(active_plants, p1)
    return active_plants, all_plants, t, m
       
-def sim(sim_params, smart, waste, svg = None, debug = False):
+def sim(sim_params, smart, waste, force_proba=False, svg = None, debug = False):
    t0=time.time()
    xr=[sim_params["xmin"],sim_params["xmax"]]
    t = 0
@@ -151,7 +153,7 @@ def sim(sim_params, smart, waste, svg = None, debug = False):
    ms=[]
    for i in range(sim_params['N']):
       #print(i)
-      active_plants, all_plants, t, m = one_step_optimal(t, sim_params, active_plants, all_plants, xr, i, waste, debug)
+      active_plants, all_plants, t, m = one_step_optimal(t, sim_params, active_plants, all_plants, xr, i, waste, force_proba, debug)
       ms.append(m)
       sel_ts.append(t)
    if svg: save_sim(t0,sim_params, all_plants, ms, sel_ts, svg)

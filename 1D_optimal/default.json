@@ -1,5 +1,6 @@
 {"smart": false,
  "waste":false,
+ "force_proba":false,
  "N": 40, 
  "xmin": 0,
  "xmax": 100,
