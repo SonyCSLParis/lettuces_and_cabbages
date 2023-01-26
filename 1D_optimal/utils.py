@@ -72,9 +72,9 @@ def plot_schema(srs, eta, x_p, prs, pxs, pss, accept, svg, i, m):
    pl.savefig(svg)
    pl.clf()
 
-def plot_schema_optimal(srs, eta, phi, x_p, prs, pvs, pxs, pss, accept, svg, i, m, t, xmax=10):
+def plot_schema_optimal(srs, eta, x_p, prs, pvs, pxs, pss, accept, svg, i, m, t, xmax=10):
    cols = {"c" : [0.1, 0.4, 0.1], "l": [0.1, 0.8, 0.1]}
-   svs = 100 - phi
+   svs = 100-accept
    fig=pl.figure(figsize=(25,4))
    pl.subplot(211)
    pl.axis("off")
