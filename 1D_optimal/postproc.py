@@ -111,19 +111,20 @@ def fig_dts(s):
    pl.savefig("figs/eff_rate.png", bbox_inches = "tight")
    pl.clf()
 
-
-def fig_density(s, folder):
-   p = get_params(folder)
-   N = p["N"]
+def fig_density(s):
+   #p = get_params(folder)
+   #N = p["N"]
+   N=4000
    pl.plot(s["prs"],N/np.array(s["tmax mean"]), "k")
    pl.xlabel("Planting rate")
    pl.ylabel("Density")
    pl.savefig("figs/density.png", bbox_inches = "tight")
    pl.clf()
    
-def fig_density_lc(s, folder):
-   p = get_params(folder)
-   N = p["N"]
+def fig_density_lc(s):
+   #p = get_params(folder)
+   #N = p["N"]
+   N=4000
    Nc = s["Nc mean"]
    pl.fill_between(s["prs"], np.zeros(len(s["density_c mean"])), s["density_c mean"], color = [0.1, 0.4, 0.1])
    pl.fill_between(s["prs"], s["density_c mean"], np.array(s["density_c mean"])+np.array(s["density_l mean"]), color = [0.1, 0.8, 0.1])
@@ -147,18 +148,26 @@ def fig_sim_time(s):
    #pl.errorbar(s["prs"], s["N trials mean"], yerr = s["N trials std"], fmt="-", color = "k")
    pl.plot(s["prs"], s["N trials mean"], color = "k")
    pl.xlabel("Planting rate")
-   pl.ylabel("Simulation time")
+   pl.ylabel("N trails")
    pl.savefig("figs/N_trials.png")
    pl.clf()
 
    #pl.errorbar(s["prs"], s["sim time mean"], yerr = s["sim time std"], fmt="-", color = "k")
    pl.plot(s["prs"], s["sim time mean"],  color = "k")
    pl.xlabel("Planting rate")
-   pl.ylabel("N trials")
+   pl.ylabel("sim time")
    pl.savefig("figs/sim_time.png")
    pl.clf()
 
-s=json.load(open("res/stats_sel.json"))
+s=json.load(open("res/stats_lettuces.json"))
+
+fig_Nc(s)
+fig_density(s)
+fig_density_lc(s)
+fig_ratio(s)
+fig_sim_time(s)
+fig_dts(s)
+
 
 
 #folder = "/home/kodda/Dropbox/p2pflab/lettuces_and_cabbages/1D_optimal/res/prs_force_proba/"
