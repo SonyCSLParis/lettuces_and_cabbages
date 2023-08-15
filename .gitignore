@@ -1,6 +1,9 @@
 test/
 res/
+data/
 figs/
+tmp/
+anims/
 __pycache__/
 *~
 debug*
