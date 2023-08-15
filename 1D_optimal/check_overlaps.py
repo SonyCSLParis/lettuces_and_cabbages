@@ -38,29 +38,33 @@ def plot_field(plants, sim_params, ts, svg):
       if (p["t"]>ts[0])*(p["t"]<ts[1]): plot_plant(p["t"], p["x"], p["species"], sim_params["tmax"], sim_params["R"], sim_params["a"], sim_params["cols"], ax, params)
    pl.savefig(svg, facecolor=fig.get_facecolor(),bbox_inches="tight") 
 
-t0=time.time()
-data = json.load(open("res/test.json"))
+def check_overlaps():
+   t0=time.time()
+   #data = json.load(open("res/test.json"))
+   i=0
+   data=json.load(open("res/prs/20.05_%02d.json"%i))
 
-plants = data["plants"]
-params = data["sim_params"]
+   plants = data["plants"]
+   params = data["sim_params"]
 
-overlap_pairs = []
+   overlap_pairs = []
 
-for i in range(len(plants)):
-    for j in range(i+1, len(plants)):
-        p1=plants[i]
-        p2=plants[j]
-        if (close_time(p1, p2, params) and close_space(p1, p2, params)):
-           tf = get_tf(p1, p2, params)
-           ti = max(p1["t"], p2["t"])
-           t_inter = fsolve(intersect_index, ti, args=(p1, p2, params))
-           if (t_inter==ti): print("fsolve didn't converged! ")
-           if t_inter<tf: 
-              overlap_pairs.append(i)
-              overlap_pairs.append(j)
+   for i in range(len(plants)):
+       for j in range(i+1, len(plants)):
+           p1=plants[i]
+           p2=plants[j]
+           if (close_time(p1, p2, params) and close_space(p1, p2, params)):
+              tf = get_tf(p1, p2, params)
+              ti = max(p1["t"], p2["t"])
+              t_inter = fsolve(intersect_index, ti, args=(p1, p2, params))
+              if (t_inter==ti): print("fsolve didn't converged! ")
+              if t_inter<tf: 
+                 overlap_pairs.append(i)
+                 overlap_pairs.append(j)
 
-inters = np.unique(overlap_pairs)
-overplants = [plants[i] for i in inters]
-#overplants = [plants[10], plants[118]]
-plot_field(overplants, params, [0,100], "overlaps.png")
-print(time.time()-t0)
+   inters = np.unique(overlap_pairs)
+   overplants = [plants[i] for i in inters]
+   #overplants = [plants[10], plants[118]]
+   #plot_field(overplants, params, [0,100], "overlaps.png")
+   print(time.time()-t0)
+   

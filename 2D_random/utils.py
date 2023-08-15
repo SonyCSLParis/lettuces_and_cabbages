@@ -12,13 +12,13 @@ def growth(t, p, params):
    return params["R"][s]/(1+np.exp(-params["a"][s]*(t-p["t"])+params["b"][s]))
 
 def mk_fig(t, plants, params, svg):
-   fig=pl.figure(figsize=(10,4))
+   fig=pl.figure(figsize=(20,20))
    ax = fig.add_subplot(111)
 
    fig.patch.set_facecolor("#805b21")
    pl.axis("off")
 
-   pl.plot([0,0,10,10],[-2,2,-2,2],".")
+   pl.plot([0,0,50,50],[0,50,0,50],".")
    #ax.set_aspect(1)
 
    for p in plants:
@@ -49,10 +49,11 @@ def get_meas(plants, params):
    for t in range(T): ms[t] = get_meas_t(plants, params, t)
    return ms     
 
-def mk_anim(plants, params, folder = "tmp", svg="test.mp4"):   
+def mk_anim(plants, params, ts=None, folder = "tmp", svg="test.mp4"):   
    if os.path.exists(folder): shutil.rmtree(folder)
    os.mkdir(folder)
-   for t in range(int(plants[-1]["t"])): mk_fig(t, plants, params, folder+"/%03d.png"%t)
+   if not(ts): ts=[0, int(plants[-1]["t"])]
+   for t in range(ts[0],ts[1]): mk_fig(t, plants, params, folder+"/%03d.png"%t)
    files = glob.glob(folder+"/*")
    files.sort()
    writer = imageio.get_writer('test.mp4', fps=5)

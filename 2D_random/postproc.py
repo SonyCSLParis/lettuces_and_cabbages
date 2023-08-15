@@ -117,18 +117,18 @@ def fig_dts(s, name):
    pl.clf()
 
 
-def fig_density(s, folder, name):
-   p = get_params(folder)
-   N = p["N"]
+def fig_density(s, N, name):
+   #p = get_params(folder)
+   #N = p["N"]
    pl.plot(s["prs"],N/np.array(s["tmax mean"]), "k")
    pl.xlabel("Planting rate")
    pl.ylabel("Density")
    pl.savefig("figs/density_%s.png"%name, bbox_inches = "tight")
    pl.clf()
    
-def fig_density_lc(s, folder, name):
-   p = get_params(folder)
-   N = p["N"]
+def fig_density_lc(s, N, name):
+   #p = get_params(folder)
+   #N = p["N"]
    Nc = s["Nc mean"]
    pl.fill_between(s["prs"], np.zeros(len(s["density_c mean"])), s["density_c mean"], color = [0.1, 0.4, 0.1])
    pl.fill_between(s["prs"], s["density_c mean"], np.array(s["density_c mean"])+np.array(s["density_l mean"]), color = [0.1, 0.8, 0.1])
@@ -139,9 +139,10 @@ def fig_density_lc(s, folder, name):
    pl.savefig("figs/density_lc_%s.png"%name, bbox_inches = "tight")
    pl.clf()
 
-def fig_density_lc_surf(s, folder, name):
-   p = get_params(folder)
-   N = p["N"]
+def fig_density_lc_surf(s, N, name):
+   #p = get_params(folder)
+   #N = p["N"]
+   
    Nc = s["Nc mean"]
    pl.fill_between(s["prs"], np.zeros(len(s["density_c mean"])), np.array(s["density_c mean"])*.7272, color = [0.1, 0.4, 0.1])
    pl.fill_between(s["prs"], np.array(s["density_c mean"])*.7272, np.array(s["density_c mean"])*.7272+np.array(s["density_l mean"])*.2727, color = [0.1, 0.8, 0.1])
@@ -177,8 +178,21 @@ def fig_sim_time(s, name):
    pl.savefig("figs/sim_time_%s.png"%name)
    pl.clf()
 
-res = json.load(open("/home/kodda/Dropbox/p2pflab/lettuces_and_cabbages/2D_random/res/prs_force_proba/100.00_29.json"))
-ut.mk_anim(res["plants"], res["sim_params"], folder = "tmp", svg="test.mp4")
+   
+s = json.load(open("res/stats_sel_20x20.json"))
+name = "sel_20x20"
+N=40000
+fig_Nc(s, name)
+fig_density(s, N, name)
+fig_density_lc(s, N, name)
+fig_density_lc_surf(s, N, name)
+fig_ratio(s, name)
+fig_sim_time(s, name)
+fig_dts(s, name)
+
+   
+#res = json.load(open("/home/kodda/Dropbox/p2pflab/lettuces_and_cabbages/2D_random/res/prs_force_proba/100.00_29.json"))
+#ut.mk_anim(res["plants"], res["sim_params"], folder = "tmp", svg="test.mp4")
 
 #folder = "/home/kodda/Dropbox/p2pflab/lettuces_and_cabbages/1D_optimal/res/prs_force_proba/"
 """

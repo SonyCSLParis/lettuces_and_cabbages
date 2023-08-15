@@ -11,8 +11,9 @@ def one_run_test(pr=5):
    sim_params["planting_rate"] = pr
    sim_params["N"] = 8000 #for debug
    sim_params["waste"]=True
+   sim_params["force_proba"]=True
    t0 = time.time()
-   res = ics.sim(sim_params, sim_params["smart"],  sim_params["waste"], "res/test.json", debug=False)
+   res = ics.sim(sim_params, sim_params["smart"],  sim_params["waste"],sim_params["force_proba"], "res/test.json", debug=False)
 
    sim_data = json.load(open("res/test.json"))
    ut.plot_field(sim_data["plants"], sim_data["sim_params"], [0, 8000], "figs/test.png")
@@ -28,8 +29,9 @@ def one_run(pr, sim_params, name = "test", svg_folder = "res/", plot_folder = "f
    return pr
 
 
-#one_run_test(10)
+one_run_test(20)
 
+"""
 sim_params = json.load(open('default.json'))
 sim_params["N"] = 4000
 
@@ -43,3 +45,4 @@ plot_folder = None
 
 for pr in prs_waste:
    Parallel(n_jobs=30)(delayed(one_run)(pr, sim_params, svg_folder = "res/prs_force_proba/", name = "%.2f_%02d"%(pr,i), plot_folder = plot_folder) for i in range(N))
+"""
